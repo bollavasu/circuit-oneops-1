@@ -88,6 +88,23 @@ if server != nil
     end
     conn.delete_server(server['InstanceId'])
 
+  # To destroy/release a server from Google
+    when /google/
+    server = conn.servers.get(node[:server_name])
+    server_name = server.name
+    Chef::Log.info("SERVER NAME : "+server_name)
+    if server.state != "RUNNING"
+      Chef::Log.info("state: "+server.state)
+    else
+      Chef::Log.info("DELETING SERVER")
+      begin
+      server.destroy
+      rescue Exception => e
+      Chef::Log.info("delete failed: #{e.message}")
+      end
+      sleep 90
+    end
+
   else
     Chef::Log.info("destroying server: "+rfcCi[:ciAttributes][:instance_id])
     begin
