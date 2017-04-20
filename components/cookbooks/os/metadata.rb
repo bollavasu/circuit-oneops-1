@@ -61,7 +61,9 @@ attribute 'ostype',
       ['Redhat 7.2','redhat-7.2'],
       ['Redhat 7.3','redhat-7.3'],        	    
       ['Windows 2012 R2','windows_2012_r2'],
-	  ['Windows 2016','windows_2016']
+	  ['Windows 2016','windows_2016'],
+	    ['Debian 8','debian-8'],
+   ['Fedora 24','fedora-24']
 	] }
   }
 
