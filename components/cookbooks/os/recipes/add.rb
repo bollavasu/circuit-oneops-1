@@ -51,7 +51,6 @@ puts "***RESULT:hostname=#{node.vmhostname}"
 
 #Perform windows-specific recipes and exit
 if ostype =~ /windows/
-  `sed -i 's/.*StrictModes .*/StrictModes no/' /etc/sshd_config`
   include_recipe "os::logrotate_windows"
   include_recipe "os::network_windows"
   return true
@@ -83,6 +82,9 @@ ruby_block 'setup share' do
     rfcCi = node[:workorder][:rfcCi]
     nsPathParts = rfcCi[:nsPath].split("/")
     server_name = rfcCi[:ciName]+'-'+nsPathParts[3]+'-'+nsPathParts[2]+'-'+nsPathParts[1]+'-'+ rfcCi[:ciId].to_s
+    if(node[:workorder][:cloud][:ciAttributes][:location].index('google') > -1)
+      server_name=server_name.downcase
+    end
 
     cmd = "grep #{server_name} /etc/fstab"
     Chef::Log.info("cmd: #{cmd}")
