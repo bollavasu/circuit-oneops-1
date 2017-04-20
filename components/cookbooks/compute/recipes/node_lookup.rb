@@ -15,9 +15,15 @@
 rfcCi = node["workorder"]["rfcCi"]
 nsPathParts = rfcCi["nsPath"].split("/")
 server_name = node.workorder.box.ciName+'-'+nsPathParts[3]+'-'+nsPathParts[2]+'-'+nsPathParts[1]+'-'+ rfcCi["ciId"].to_s
+if(node[:workorder][:cloud][:ciAttributes][:location].index('google') > -1)
+  server_name=server_name.downcase
+end
 
 if(server_name.size > 63)
   server_name = server_name.slice(0,63-(rfcCi["ciId"].to_s.size)-1)+'-'+ rfcCi["ciId"].to_s
+  if(node[:workorder][:cloud][:ciAttributes][:location].index('google') > -1)
+    server_name=server_name.downcase
+  end
   Chef::Log.info("Truncated server name to 64 chars : #{server_name}")
 end
 
