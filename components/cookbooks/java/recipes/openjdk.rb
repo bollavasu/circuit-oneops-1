@@ -22,6 +22,9 @@
 extend Java::Util
 
 version = node[:java][:version]
+if(node[:workorder][:cloud][:ciAttributes][:location].index('google') > -1) && (node.platform == "debian")
+  version = 7
+end
 pkg = node[:java][:jrejdk]
 
 case node['platform_family']
@@ -38,5 +41,4 @@ Chef::Log.info "Java package name to be installed: #{pkg_name}"
 
 package "#{pkg_name}"
 log "OpenJDK-#{version} #{pkg} package installation is done!"
-
 
