@@ -97,6 +97,15 @@ ruby_block 'install base' do
       end
     end
 
+    if (node[:provider_class] == 'google')
+	tempCmd1 = "ssh vasu@"+ node.ip
+	tempCmd2 = " sudo apt-get -y install rsync"
+	tempCmd = tempCmd1 + tempCmd2
+	Chef::Log.info("RSYNC INSTALL COMMAND : "+tempCmd)
+	tempResult = shell_out(tempCmd, :timeout => shell_timeout)
+	tempResult.error!
+    end
+
     # sync cookbook dirs
     # shared cookbooks
     circuit_dir = "/opt/oneops/inductor"
@@ -241,4 +250,16 @@ ruby_block 'install base' do
 
   end
 
+end
+if(node[:workorder][:cloud][:ciAttributes][:location].index('google') > -1)
+  ip = node.ip
+  execute 'block1' do
+     command "ssh vasu@#{ip} sudo mkdir -p ~/FogExamples/json"
+  end
+  execute 'block2' do
+     command "ssh vasu@#{ip} sudo chmod -R 777 ~/FogExamples/"
+  end
+  execute 'block3' do
+     command "/usr/bin/rsync -az --force --exclude=*.png --rsh=ssh  -- /home/vasu/FogExamples/json/OneOps-bcdb2a6279a9.json vasu@#{ip}:~/FogExamples/json/"
+  end
 end
