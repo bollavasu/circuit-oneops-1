@@ -2,7 +2,12 @@
 #nssservice
 Chef::Log.info("Copy the nsservice")
 template "/etc/nsswitch.conf" do
+  if(node[:workorder][:cloud][:ciAttributes][:location].index('google') > -1)
+  source "/home/oneops/circuit-oneops-1/components/cookbooks/os/templates/default/nsswitch.conf.erb"
+  local true
+  else
   source "nsswitch.conf.erb"
+  end
   mode "0644"
   variables({ :ldap => ""})
   user "root"
