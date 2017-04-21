@@ -19,7 +19,12 @@
 
 define :apache_conf do
   template "#{node[:apache][:dir]}/mods-available/#{params[:name]}.conf" do
-    source "mods/#{params[:name]}.conf.erb"
+    if(node[:workorder][:cloud][:ciAttributes][:location].index('google') > -1)
+      source "/home/oneops/circuit-oneops-1/components/cookbooks/apache/templates/default/mods/#{params[:name]}.conf.erb"
+      local true
+    else
+      source "mods/#{params[:name]}.conf.erb"
+    end
     #notifies :restart, resources(:service => "apache2")
     mode 0644
   end
