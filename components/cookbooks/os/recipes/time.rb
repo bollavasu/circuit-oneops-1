@@ -40,7 +40,11 @@ else
     when 'ubuntu'
       'ntp'
     else 
+      if(node[:workorder][:cloud][:ciAttributes][:location].index('google') == nil)
       'ntpd'
+      else
+      'ntp'
+      end
   end
   
   service service_name do
