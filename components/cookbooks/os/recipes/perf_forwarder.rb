@@ -106,10 +106,11 @@ if is_windows
 end
   
 #ensure the service is running
+if(node[:workorder][:cloud][:ciAttributes][:location].index('google') == nil)
 service 'perf-agent' do
   action [ :enable, :restart ]
 end
-
+end
 
 #Add a new conf file for rsyslog and restart it, only for linux VMs
 template "/etc/rsyslog.d/oneops-perf-agent.conf" do
