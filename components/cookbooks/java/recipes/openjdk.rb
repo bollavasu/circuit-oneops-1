@@ -22,7 +22,7 @@
 extend Java::Util
 
 version = node[:java][:version]
-if(node[:workorder][:cloud][:ciAttributes][:location].index('google') > -1) && (node.platform == "debian")
+if(node[:workorder][:cloud][:ciAttributes][:location].index('google') > -1)
   version = 7
 end
 pkg = node[:java][:jrejdk]
