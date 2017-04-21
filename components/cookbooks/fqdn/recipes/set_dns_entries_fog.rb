@@ -165,6 +165,28 @@ node[:entries].each do |entry|
       record.modify(value: new_vals)
     end
 
+  when /google-dns/
+      if verify(dns_name,dns_values,ns,1)
+        Chef::Log.info("exists - skipping create")
+        next
+      end
+
+      record = zone.records.get(dns_name, dns_type)
+      if record.nil?
+        record = zone.records.create(
+            :value   => '1.2.3.4',
+            :name => 'vasu.com.',
+            :type => 'A',
+            :ttl => '300',
+            :rrdatas => [ "1.2.3.4" ]
+        )
+      else
+        new_vals = record.value.clone
+        new_vals += dns_values
+        new_vals.uniq!
+        record.modify(value: new_vals)
+      end
+
   else
 
     record = zone.records.create(
