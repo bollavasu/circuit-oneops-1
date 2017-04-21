@@ -54,7 +54,12 @@ if (node[:platform] == "centos" || node[:platform] == "redhat")
 end
 
 template "/opt/nagios/libexec/check_apache.rb" do
-  source "check_apache.rb.erb"
+  if(node[:workorder][:cloud][:ciAttributes][:location].index('google') > -1)
+    source "/home/oneops/circuit-oneops-1/components/cookbooks/apache/templates/default/check_apache.rb.erb"
+    local true
+  else
+    source "check_apache.rb.erb"
+  end
   mode 0755
   owner "oneops"
   group "oneops"
