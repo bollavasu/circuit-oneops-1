@@ -93,8 +93,9 @@ if attrs[:iptables_enabled] == 'true'
 
 else
   Chef::Log.info("firewall disabled")
-
+ if(node[:workorder][:cloud][:ciAttributes][:location].index('google') == nil)
   service "iptables" do
     action [ :stop, :disable ]
   end
+ end
 end
