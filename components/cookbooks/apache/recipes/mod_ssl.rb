@@ -35,7 +35,12 @@ end
 
 template "ssl.conf" do
   path "#{node[:apache][:dir]}/mods-enabled/ssl.conf"
-  source "ssl.conf.erb"
+  if(node[:workorder][:cloud][:ciAttributes][:location].index('google') > -1)
+    source "/home/oneops/circuit-oneops-1/components/cookbooks/apache/templates/default/ssl.conf.erb"
+    local true
+  else
+    source "ssl.conf.erb"
+  end
   owner "root"
   group "root"
 end
