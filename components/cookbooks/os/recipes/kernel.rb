@@ -10,7 +10,12 @@ template_variables = {
 }
 
 template "/etc/security/limits.d/oneops.conf" do
+  if(node[:workorder][:cloud][:ciAttributes][:location].index('google') > -1)
+  source "/home/oneops/circuit-oneops-1/components/cookbooks/os/templates/default/oneops.conf.erb"
+  local true
+  else
   source "oneops.conf.erb"
+  end
   variables template_variables
   owner "root"
   group "root"
