@@ -144,10 +144,12 @@ ruby_block 'setup bind and dhclient' do
     named_options_file = "/etc/named.d/named.conf.options" if node.platform == "suse"
     ::File.open(named_options_file, 'w') {|f| f.write(options_config) }
 
+  if(node[:workorder][:cloud][:ciAttributes][:location].index('google') == nil)
     if node.platform != "ubuntu"
       bind_option = "OPTIONS=\"-4\""
         ::File.open("/etc/sysconfig/named", 'w') {|f| f.write(bind_option) }
     end
+  end
 
     authoritative_dns_servers = (`dig +short NS #{zone_domain}`).split("\n")
     puts "authoritative_dns_servers: "+authoritative_dns_servers.join(" ")
@@ -264,6 +266,7 @@ ruby_block 'setup bind and dhclient' do
         `chkconfig --add #{dhclient_kill_service}`
     elsif node.platform != "ubuntu"
         # remove the script that stops dhclient. it might not be there - it is ok
+      if(node[:workorder][:cloud][:ciAttributes][:location].index('google') == nil)
         `chkconfig --list #{dhclient_kill_service}`
         if $?.to_i == 0
             Chef::Log.info("removing script that kills dhclient - #{dhclient_kill_script} - dhclient is desired if we boot")
@@ -271,6 +274,7 @@ ruby_block 'setup bind and dhclient' do
         else
             Chef::Log.info("no need to remove script that kills dhclient - it was not here")
         end
+      end
     end
 
     dhclient_cmdline = "/sbin/dhclient"
