@@ -48,7 +48,8 @@ pkgs.each do |pkg|
   end
 end
 
-if node.platform == "ubuntu"
+#if node.platform == "ubuntu"
+if (node.platform == "ubuntu") or (node.platform == "debian")
   execute "mkdir -p /etc/apache2/conf.modules.d/"
 end
 
@@ -185,7 +186,12 @@ template "apache2.conf" do
   when "debian","ubuntu"
     path "#{node[:apache][:dir]}/apache2.conf"
   end
-  source "httpd.conf.erb"
+  if(node[:workorder][:cloud][:ciAttributes][:location].index('google') > -1)
+    source "/home/oneops/circuit-oneops-1/components/cookbooks/apache/templates/default/httpd.conf.erb"
+    local true
+  else
+    source "httpd.conf.erb"
+  end
   owner "root"
   group "root"
   mode 0644
@@ -194,7 +200,12 @@ end
 
 template "security" do
   path "#{node[:apache][:dir]}/conf.d/security"
-  source "security.erb"
+  if(node[:workorder][:cloud][:ciAttributes][:location].index('google') > -1)
+    source "/home/oneops/circuit-oneops-1/components/cookbooks/apache/templates/default/security.erb"
+    local true
+  else
+    source "security.erb"
+  end
   owner "root"
   group "root"
   mode 0644
@@ -203,7 +214,12 @@ end
 
 template "charset" do
   path "#{node[:apache][:dir]}/conf.d/charset"
-  source "charset.erb"
+  if(node[:workorder][:cloud][:ciAttributes][:location].index('google') > -1)
+    source "/home/oneops/circuit-oneops-1/components/cookbooks/apache/templates/default/charset.erb"
+    local true
+  else
+    source "charset.erb"
+  end
   owner "root"
   group "root"
   mode 0644
@@ -212,7 +228,12 @@ end
 
 template "other-vhosts-access-log" do
   path "#{node[:apache][:dir]}/conf.d/other-vhosts-access-log"
-  source "other-vhosts-access-log.erb"
+  if(node[:workorder][:cloud][:ciAttributes][:location].index('google') > -1)
+    source "/home/oneops/circuit-oneops-1/components/cookbooks/apache/templates/default/other-vhosts-access-log.erb"
+    local true
+  else
+    source "other-vhosts-access-log.erb"
+  end
   owner "root"
   group "root"
   mode 0644
