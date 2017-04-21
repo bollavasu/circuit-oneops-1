@@ -37,6 +37,13 @@ when /route53/
     :aws_access_key_id => dns_attrs[:key],
     :aws_secret_access_key => dns_attrs[:secret]
   ) 
+when /google-dns/
+    dns = Fog::DNS.new(
+        :provider => 'Google',
+        :google_project => 'oneops-153015',
+        :google_client_email => dns_attrs[:key],
+        :google_json_key_location => dns_attrs[:secret]
+  )
   domain_name += "."
 end
 
