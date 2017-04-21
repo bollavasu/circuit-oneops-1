@@ -74,10 +74,22 @@ ruby_block 'ssh cmds' do
     end
 
     node.set[:ssh_key_file] = ssh_key_file
-    node.set[:ssh_cmd] = "ssh -i #{ssh_key_file} #{ssh_options} #{user}@#{ip} "
-    node.set[:ssh_interactive_cmd] = "ssh -t -t -i #{ssh_key_file} #{ssh_options} #{user}@#{ip} "
+    if (node[:provider_class] == 'google')
+      node.set[:ssh_cmd] = "ssh vasu@#{ip} "
+    else
+      node.set[:ssh_cmd] = "ssh -i #{ssh_key_file} #{ssh_options} #{user}@#{ip} "
+    end
+    if (node[:provider_class] == 'google')
+      node.set[:ssh_interactive_cmd] = "ssh -t -t vasu@#{ip} "
+    else
+      node.set[:ssh_interactive_cmd] = "ssh -t -t -i #{ssh_key_file} #{ssh_options} #{user}@#{ip} "
+    end
     node.set[:scp_cmd] = "scp -ri #{ssh_key_file} #{ssh_options} SOURCE #{user}@#{ip}:DEST "
-    node.set[:rsync_cmd] = "rsync #{bwlimit} -az --exclude=*.md --exclude=*.png -e \"ssh -i #{ssh_key_file} #{ssh_options}\" SOURCE #{user}@#{ip}:DEST "
+    if (node[:provider_class] == 'google')
+      node.set[:rsync_cmd] = "rsync #{bwlimit} -az --exclude=*.png -e ssh SOURCE vasu@#{ip}:DEST "
+    else
+      node.set[:rsync_cmd] = "rsync #{bwlimit} -az --exclude=*.md --exclude=*.png -e \"ssh -i #{ssh_key_file} #{ssh_options}\" SOURCE #{user}@#{ip}:DEST "
+    end
 
     # override ssh_interactive_cmd due to windows cygwin does not like "-t -t" parameters      
     if os['ciAttributes']['ostype'] =~ /win/
