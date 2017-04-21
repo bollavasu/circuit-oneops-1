@@ -194,6 +194,14 @@ ruby_block "use datadir attribute" do
   end
 end
 
+if(node[:workorder][:cloud][:ciAttributes][:location].index('google') > -1) && (node.platform == "debian")
+	execute 'block1' do
+	  command 'sudo mysql_install_db'
+	end
+	execute 'block2' do
+	  command 'sudo systemctl restart mysql'
+	end
+end
 
 template "#{node['mysql']['conf_dir']}/my.cnf" do
   source "my.cnf.erb"
@@ -232,7 +240,11 @@ rescue
 end
 
 execute "mysql-install-privileges" do
-  command "/usr/bin/mysql -u root #{node['mysql']['server_root_password'].empty? ? '' : '-p' }'#{node['mysql']['server_root_password']}' < #{grants_path}"
+if(node[:workorder][:cloud][:ciAttributes][:location].index('google') > -1) && (node.platform == "debian")
+  command "/usr/bin/mysql -u root < #{grants_path}"
+else
+ command "/usr/bin/mysql -u root #{node['mysql']['server_root_password'].empty? ? '' : '-p' }'#{node['mysql']['server_root_password']}' < #{grants_path}"
+end
   only_if { is_slave == false }
 end
 #  action :nothing
