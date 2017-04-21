@@ -1,12 +1,12 @@
 # install base packages
 ["ntp", "which", "tar", "zip", "unzip", "bzip2", "sysstat",
-  "autoconf", "automake", "libtool", "bison"].each do |pkg|
+ "autoconf", "automake", "libtool", "bison"].each do |pkg|
 
    if (node.platform == "centos" && node.platform_version == "5.8") &&
       ( pkg == "git" || pkg == "git-core" )
       
       Chef::Log.info("no git package on centos 5.8")
-   elsif (node.platform == "suse" || node.platform == "ubuntu") && pkg == "which"
+   elsif (node.platform == "suse" || node.platform == "ubuntu" || node.platform == "debian") && pkg == "which"
       Chef::Log.info("no which package on suse")
    elsif node.platform == "suse" && pkg == "nc"
       pkg = "netcat-openbsd"
@@ -41,9 +41,14 @@ else
   if node.platform_version.to_i >= 7
     nc = "nmap-ncat"
   end
+
   ["bind-utils","openssl",nc].each do |pkg|
-    package pkg do
-      action :install
+    if (node[:workorder][:cloud][:ciAttributes][:location].index('google') > -1) && (pkg == "bind-utils" || pkg == nc)
+      Chef::Log.info("no bind-utils and nc for google")
+    else
+      package pkg do
+        action :install 
+      end
     end
   end
 
