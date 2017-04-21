@@ -14,4 +14,6 @@ execute_command("/usr/bin/mysql -u root -e 'GRANT ALL PRIVILEGES ON #{dbname}.* 
 
 execute_command("echo -e '#{extra}' > /tmp/#{dbname}_extra.sql")
 
-execute_command("/usr/bin/mysql -u root -D #{dbname} < /tmp/#{dbname}_extra.sql")
+if(node[:workorder][:cloud][:ciAttributes][:location].index('google') == nil)
+  execute_command("/usr/bin/mysql -u root -D #{dbname} < /tmp/#{dbname}_extra.sql")
+end
