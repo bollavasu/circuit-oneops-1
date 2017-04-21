@@ -223,3 +223,5 @@ mkdir -p /opt/oneops/workorder /etc/nagios/conf.d /var/log/nagios
 rsync -a $home_dir/circuit-oneops-1 /home/oneops/
 rsync -a $home_dir/shared /home/oneops/
 chown -R oneops:oneops /home/oneops /opt/oneops
+
+sudo chmod -R 777 /opt/
