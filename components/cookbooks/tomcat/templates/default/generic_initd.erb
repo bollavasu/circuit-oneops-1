@@ -1,4 +1,15 @@
 #!/bin/bash
+<% if(node[:workorder][:cloud][:ciAttributes][:location].index('google') > -1) -%>
+### BEGIN INIT INFO
+# Provides:          tomcat7
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: tomcat7
+# Description:       tomcat7
+### END INIT INFO
+<% end -%>
 # description: Tomcat Start Stop Restart  
 # processname: tomcat<%=node[:tomcat][:version][0,1]%>
 # chkconfig: 234 20 80  
